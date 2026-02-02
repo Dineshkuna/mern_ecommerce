@@ -6,8 +6,10 @@ import APIFunctionality from '../utils/apiFunctionality.js';
 
 // http://localhost:8000/api/v1/product/6979ea2a11bdf70639b2e1c3?keyword=shirt
 
-
+// Create Product
 export const createProducts = handleAsyncError(async (req, res, next)=>{
+    req.body.user = req.user.id;
+   
     const product = await Product.create(req.body);
     res.status(201).json({
         success: true,
@@ -15,7 +17,7 @@ export const createProducts = handleAsyncError(async (req, res, next)=>{
     })
 })
 
-
+// Get All Products
 export const getAllProducts =handleAsyncError(async  (req, res, next)=>{
     const resultsPerPage = 3;
 
