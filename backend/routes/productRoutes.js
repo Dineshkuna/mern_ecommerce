@@ -1,5 +1,5 @@
 import express from "express";
-import { createProducts, createReviewForProduct, deleteProduct, getAdminProducts, getAllProducts, getSingleProduct, UpdateProduct } from "../controller/productController.js";
+import { createProducts, createReviewForProduct, deleteProduct, deleteReview, getAdminProducts, getAllProducts, getProductReviews, getSingleProduct, UpdateProduct } from "../controller/productController.js";
 import { roleBasedAccess, verifyUserAuth } from "../middleware/userAuth.js";
 
 
@@ -20,6 +20,12 @@ router.route('/admin/product/:id')
 router.route('/product/:id').get(getSingleProduct);
 
 router.route('/review').put(verifyUserAuth,createReviewForProduct);
+
+router.route('/reviews')
+.get(verifyUserAuth,getProductReviews)
+.delete(verifyUserAuth,deleteReview);
+
+
 
 
 
