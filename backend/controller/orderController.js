@@ -136,8 +136,4 @@ export const deleteOrder = handleAsyncError(async(req, res, next)=>{
         success: true,
         message: "Order deleted successfully"
     });
-
-
-
-
 })
