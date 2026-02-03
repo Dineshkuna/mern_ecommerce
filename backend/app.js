@@ -3,6 +3,7 @@ import errorHandleMiddleware from './middleware/error.js';
 import user from './routes/userRoutes.js';
 import product from './routes/productRoutes.js';
 import cookieParser from 'cookie-parser';
+import order from './routes/orderRoutes.js';
 
 
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 app.use("/api/v1", product);
 app.use("/api/v1", user);
+app.use("/api/v1",order);
 
 
 app.use(errorHandleMiddleware);
