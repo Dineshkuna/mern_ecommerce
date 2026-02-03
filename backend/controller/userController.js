@@ -242,16 +242,7 @@ export const updateUserRole = handleAsyncError(async(req, res, next)=>{
 }); 
 
 
-// Creating and Updating Review
 
-export const createReviewForProduct = handleAsyncError(async(req, res, next)=>{
-
-    console.log(req.body)
-    console.log(req.user.id)
-
-
-
-})
 
 
 
