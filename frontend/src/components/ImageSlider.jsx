@@ -38,7 +38,7 @@ function ImageSlider() {
       {images.map((_, index) => (
         <span
           key={index}
-          className={`dot ${index === currentIndex ? 'active' : ''}`} onClick={() =>setCurrentIndex(index)}
+          className={`dot ${index === currentIndex ? 'active' : ''}`} onClick={() =>setCurrentIndex(index)} 
         />
       ))}
     </div>
