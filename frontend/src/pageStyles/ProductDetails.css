@@ -44,13 +44,13 @@
     box-shadow: 0 0 2px black;
   }
   
-  
   .product-info {
     padding: 20px;
     width: 500px;
   }
-  .product-description,.product-price{
+  .product-description{
     text-align: left;
+    color: #0F1111;
   }
   .product-info h2 {
     font-size: 24px;
