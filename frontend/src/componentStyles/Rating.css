@@ -25,3 +25,43 @@
     margin-left: 0.5rem;
   }
   
+
+
+  .rating {
+  display: inline-flex;
+}
+
+.star {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+/* empty */
+.star-empty {
+  color: var(--text-secondary);
+}
+
+/* full */
+.star-full {
+  color: var(--primary-main);
+}
+
+/* half */
+.star-half {
+  color: var(--text-secondary);
+}
+
+.star-half::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: var(--primary-main);
+}
+
+.star:hover {
+  transform: scale(1.15);
+}
