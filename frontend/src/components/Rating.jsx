@@ -62,7 +62,7 @@ function Rating({
     );
   }
 
-  return <div className="rating">{stars}</div>;
+  return <div className="ratings">{stars}</div>;
 }
 
 export default Rating;

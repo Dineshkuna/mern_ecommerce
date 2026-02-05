@@ -66,6 +66,14 @@
   .productCardSpan {
     margin-left: 0;
   }
+
+  .product-price  {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 15px 0;
+    color: #d65737;
+
+  }
   
 
   .quantity-controls {
