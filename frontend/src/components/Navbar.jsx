@@ -11,7 +11,7 @@ import  '../pageStyles/Search.css'
 function Navbar() {
     const  [ isMenuOpen, setIsMenuOpen ] = useState(false);
     const [isSearchOpen, setIsSearchOpen ] = useState(false);
-    const [searchQuery, setsearchQuery ] = useState("");
+    const [searchQuery, setSearchQuery ] = useState("");
     const toggleSearch = () => 
         setIsSearchOpen(!isSearchOpen);
     const toggleMenu = () => 
@@ -28,7 +28,7 @@ function Navbar() {
         }else {
             navigate(`/products`);
         }
-        setsearchQuery(" ");
+        setSearchQuery(" ");
     }
   return (
     <nav className='navbar' >
@@ -52,9 +52,9 @@ function Navbar() {
                     <form action="" className={`search-form ${ isSearchOpen ? 'active' : ' ' } `} onSubmit={handleSearchSubmit}>
                         <input type="text" className="search-input" placeholder='Search products....' 
                         value={searchQuery}
-                        onChange={(e)=>setsearchQuery(e.target.value)}
+                        onChange={(e)=>setSearchQuery(e.target.value)}
                         />
-                        <button className="search-icon" onClick={toggleSearch}>
+                        <button type='button' className="search-icon" onClick={toggleSearch}>
                             <SearchIcon  focusable="false"/>
 
                         </button>

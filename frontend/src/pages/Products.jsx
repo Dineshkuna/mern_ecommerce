@@ -9,11 +9,11 @@ import { getProduct } from '../features/products/productSlice';
 import Loader from '../components/Loader';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import NoProducts from '../components/NoProducts';
 
+   
 
 function Products() {
-    const  { loading,error, products,resultsPerPage,productCount} = useSelector((state) => state.product);
+    const  { loading,error, products} = useSelector((state) => state.product);
     const dispatch = useDispatch();
    const location=  useLocation();
    const searchParams =  new URLSearchParams(location.search);
@@ -22,9 +22,10 @@ function Products() {
     
    console.log(searchParams)
     useEffect(() => {
-      dispatch(getProduct(keyword));
-      }, [dispatch, keyword]);
+      dispatch(getProduct());
+      }, [dispatch]);
 
+      
        useEffect(() => {
           if (error) {
             toast.error(error.message,{position:'top-center', autoClose:3000});
@@ -45,9 +46,9 @@ function Products() {
             {/* Render Categories */}
         </div>
         <div className="products-section">
-            {products.length >0 ?(<div className="products-product-container">
+            <div className="products-product-container">
              {products.map(( product,index) => (< Product  product={ product} key={index}/>))}
-            </div>):(<NoProducts keyword={keyword}/>)}
+            </div>
         </div>
     </div>
 
