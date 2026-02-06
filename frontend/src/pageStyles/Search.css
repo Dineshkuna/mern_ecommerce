@@ -16,7 +16,10 @@
   outline: none;
   transition: width 0.3s ease;
   opacity: 0;
+ 
 }
+
+
 
 .search-form.active .search-input {
   width: 100px;
