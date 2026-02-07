@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -28,7 +28,7 @@ function Navbar() {
         }else {
             navigate(`/products`);
         }
-        setSearchQuery(" ");
+        setSearchQuery("");
     }
   return (
     <nav className='navbar' >
@@ -40,7 +40,7 @@ function Navbar() {
 
             <div className={`navbar-links ${ isMenuOpen ? 'active' : " " } ` }> 
                 <ul>
-                    <li onClick={() =>setIsMenuOpen(flase)} ><Link to="/">Home</Link></li>
+                    <li onClick={() =>setIsMenuOpen(false)} ><Link to="/">Home</Link></li>
                     <li><Link to="/products">Products</Link></li>
                     <li><Link to="/about-us">About Us</Link></li>
                     <li><Link to="/contact-us">Contact Us</Link></li>
@@ -54,7 +54,7 @@ function Navbar() {
                         value={searchQuery}
                         onChange={(e)=>setSearchQuery(e.target.value)}
                         />
-                        <button type='button' className="search-icon" onClick={toggleSearch}>
+                        <button type='button'  className="search-icon" onClick={toggleSearch}>
                             <SearchIcon  focusable="false"/>
 
                         </button>

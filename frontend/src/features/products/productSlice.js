@@ -4,7 +4,9 @@ import axios from 'axios';
 
 export const getProduct = createAsyncThunk('product/getProduct',async({keyword,page=1}, {rejectWithValue})=>{
     try {
-      const link = keyword?`/api/v1/products?keyword=${ encodeURIComponent (keyword)} & page=${page}` : `/api/v1/products?page=${page}`;
+      const link = keyword
+  ? `/api/v1/products?keyword=${encodeURIComponent(keyword)}&page=${page}`
+  : `/api/v1/products?page=${page}`;
         // const link = `/api/v1/products`;
         const {data} = await axios.get(link);
         console.log('Response', data);

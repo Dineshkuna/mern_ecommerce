@@ -1,11 +1,11 @@
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import '../pageStyles/Products.css'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import { useDispatch, useSelector } from 'react-redux';
 import Product from '../components/Product';
 import PageTitle from '../components/PageTitle';
-import { getProduct } from '../features/products/productSlice';
+import { getProduct, removeErrors } from '../features/products/productSlice';
 import Loader from '../components/Loader';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -22,14 +22,14 @@ function Products() {
     
    console.log(searchParams)
     useEffect(() => {
-      dispatch(getProduct());
-      }, [dispatch]);
+      dispatch(getProduct({keyword}));
+      }, [dispatch, keyword]);
 
       
        useEffect(() => {
           if (error) {
             toast.error(error.message,{position:'top-center', autoClose:3000});
-            
+            dispatch(removeErrors());
           }
         },[dispatch, error])
 

@@ -1,5 +1,5 @@
 
-import React, { use, useEffect } from 'react'
+import React, {  useEffect } from 'react'
 import '../pageStyles/Home.css'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
@@ -14,7 +14,7 @@ import { toast } from 'react-toastify'
 
 
 function Home() {
-  const { loading, error, products, productCount} = useSelector((state) => state.product);
+  const { loading, error, products} = useSelector((state) => state.product);
   const dispatch = useDispatch();
   useEffect(() => {
   dispatch(getProduct({keyword: ""}));
