@@ -9,6 +9,7 @@ import { getProduct, removeErrors } from '../features/products/productSlice';
 import Loader from '../components/Loader';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import NoProducts from '../components/NoProducts';
 
    
 
@@ -46,9 +47,9 @@ function Products() {
             {/* Render Categories */}
         </div>
         <div className="products-section">
-            <div className="products-product-container">
+            {products.length>0 ? (<div className="products-product-container">
              {products.map(( product,index) => (< Product  product={ product} key={index}/>))}
-            </div>
+            </div>):(<NoProducts keyword={keyword}/>)}
         </div>
     </div>
 
