@@ -17,7 +17,7 @@ function Register() {
     const [avatar, setAvatar] = useState("");
     const [avatarPreview, setAvatarPreview] = useState("/images/profile.png");
     const {name,email,password} = user;
-    const {success,error} = useSelector(state => state.user);
+    const {success,loading,error} = useSelector(state => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -97,7 +97,7 @@ function Register() {
                     accept='image/'onChange={registerDataChange} />
                     <img src={avatarPreview} className='avatar'alt="Avatar Preview" />
                 </div>
-                <button className="authBtn">Sign up</button>
+                <button className="authBtn">{loading?'Signing Up':'Sign up'}</button>
                 <p className="form-links">
                     Already have an account?<Link to='/login'> Sign in here </Link>
                 </p>
