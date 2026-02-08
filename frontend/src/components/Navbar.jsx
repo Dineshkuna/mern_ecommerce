@@ -16,7 +16,7 @@ function Navbar() {
         setIsSearchOpen(!isSearchOpen);
     const toggleMenu = () => 
         setIsMenuOpen(!isMenuOpen);
-    const isAuthenticated = true;
+    const isAuthenticated = false;
 
     const navigate = useNavigate();
 
