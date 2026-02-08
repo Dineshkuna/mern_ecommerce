@@ -17,19 +17,20 @@ import Pagination from '../components/Pagination';
 
 function Products() {
   const navigate = useNavigate();
-    const  { loading,error, products,resultsPerPage,productCount} = useSelector((state) => state.product);
+    const  { loading,error, products} = useSelector((state) => state.product);
     const dispatch = useDispatch();
    const location=  useLocation();
    const searchParams =  new URLSearchParams(location.search);
    const keyword = searchParams.get('keyword') || '';
-    console.log(keyword);
+   const category = searchParams.get('category');
     const pageFromURL = parseInt(searchParams.get('page'),10) || 1;
     const [currentPage, setCurrentPage] = useState(pageFromURL);
+    const categories = ['laptop', 'mobile', 'tv', 'fruits','shoes'];
     
    console.log(searchParams)
     useEffect(() => {
-      dispatch(getProduct({keyword,page:currentPage}));
-      }, [dispatch, keyword,currentPage]);
+      dispatch(getProduct({keyword,page:currentPage,category}));
+      }, [dispatch, keyword,currentPage,category]);
 
       
        useEffect(() => {
@@ -53,6 +54,16 @@ function Products() {
           }
         }
 
+
+
+        const handleCategoryClick = (category) => {
+          const newSearchParams = new URLSearchParams(location.search);
+          newSearchParams.set('category', category);
+          newSearchParams.delete('page');
+          navigate(`?${newSearchParams.toString()}`);
+        }
+
+
   return (
     <>
     {   loading? (<Loader/>) : (<>
@@ -64,6 +75,16 @@ function Products() {
         <div className="filter-section">
             <h3 className="filter-heading">CATEGORIES</h3>
             {/* Render Categories */}
+            <ul>
+              {
+                categories.map((category) => {
+                  return (
+                    <li key={category}onClick={()=>handleCategoryClick(category)}>{category}</li>
+                  )
+            })
+
+              }
+            </ul>
         </div>
         <div className="products-section">
             {products.length>0 ? (<div className="products-product-container">
@@ -81,6 +102,7 @@ function Products() {
     </>
   )
 }
+
 
 
 export default Products
