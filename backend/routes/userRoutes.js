@@ -7,7 +7,7 @@ router.route('/register').post(registerUser)
 router.route('/login').post(loginUser);
 router.route('/logout').post(logout);
 router.route("/password/forgot").post(requestPasswordReset);
-router.route("/reset/:token").post(resetPassword);
+router.route("/password/reset/:token").put(resetPassword);
 router.route("/profile").get(verifyUserAuth, getUserDetails);
 router.route("/password/update").put(verifyUserAuth, updatePassword);
 router.route("/profile/update").put(verifyUserAuth,updateProfile);
