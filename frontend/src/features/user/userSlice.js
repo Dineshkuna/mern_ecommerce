@@ -114,6 +114,23 @@ export const updatePassword = createAsyncThunk('user/updatePassword', async (for
 })
 
 
+export const forgotPassword = createAsyncThunk(
+  'user/forgotPassword',
+  async (emailData, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        '/api/v1/password/forgot',
+        emailData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+
 
 
 const userSlice = createSlice({
@@ -263,6 +280,29 @@ const userSlice = createSlice({
         .addCase(updatePassword.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || 'profile updatePassword failed.';
+           
+        })
+
+
+
+         // Forgot Password cases
+        builder
+        .addCase(forgotPassword.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+           
+        })
+        .addCase(forgotPassword.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null;
+            state.success =  action.payload?.success 
+            state.message =  action.payload?.message 
+
+           
+        })
+        .addCase(forgotPassword.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || 'Email sent failed.';
            
         })
     }
