@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { use, useState  } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import '../componentStyles/Navbar.css'
 import  '../pageStyles/Search.css'
+import { useSelector } from 'react-redux';
 
 function Navbar() {
     const  [ isMenuOpen, setIsMenuOpen ] = useState(false);
@@ -16,7 +17,7 @@ function Navbar() {
         setIsSearchOpen(!isSearchOpen);
     const toggleMenu = () => 
         setIsMenuOpen(!isMenuOpen);
-    const isAuthenticated = false;
+    const {isAuthenticated} = useSelector((state) => state.user);
 
     const navigate = useNavigate();
 

@@ -46,6 +46,36 @@ catch(error){
 
 )
 
+
+export const loadUser = createAsyncThunk('user/loadUser', async (_, {rejectWithValue}) => {
+    try {
+        const {data} = await axios.get('/api/v1/profile',{
+            withCredentials: true
+        });
+        
+        return data;    
+
+    }catch(error){
+        return rejectWithValue(error.response?.data || 'Failed to load user data. Please try again later');
+    }
+
+})
+
+
+export const logout = createAsyncThunk('user/logout', async (_, {rejectWithValue}) => {
+    try {
+        const {data} = await axios.post('/api/v1/logout',{
+            withCredentials: true
+        });
+        
+        return data;    
+
+    }catch(error){
+        return rejectWithValue(error.response?.data || 'Failed to load user data. Please try again later');
+    }
+
+})
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -60,7 +90,7 @@ const userSlice = createSlice({
             state.error = null;
         },
         removeSuccess: (state) => {
-            state.success = null;
+            state.success = false;
         }
     },
     extraReducers: (builder) => {
@@ -105,6 +135,49 @@ const userSlice = createSlice({
             state.error = action.payload?.message || 'Login failed. Please try again later';
             state.user = null;
             state.isAuthenticated = false;
+        })
+
+
+         // Loading user cases
+        builder
+        .addCase(loadUser.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+           
+        })
+        .addCase(loadUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null;
+            state.user = action.payload?.user || null;
+            
+            state.isAuthenticated = Boolean(action.payload?.user);
+           
+        })
+        .addCase(loadUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload?.message || 'loadUser failed. Please try again later';
+            state.user = null;
+            state.isAuthenticated = false;
+        })
+
+
+         // Logout user cases
+        builder
+        .addCase(logout.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+           
+        })
+        .addCase(logout.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null;
+            state.user =  null;
+            state.isAuthenticated = false;
+        })
+        .addCase(logout.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload?.message || 'Failed to load user profile';
+           
         })
     }
 });
