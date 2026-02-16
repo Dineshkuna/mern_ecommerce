@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 
 function ProductDetails() {
    const [ userRating, setUserRating ] = useState(0);
+   const [quantity, setQuantity] = useState(1);
        const handleRatingChange = (newRating) => {
            setUserRating(newRating);
           
@@ -58,6 +59,34 @@ function ProductDetails() {
                 </>
             )
         }
+
+        const decreaseQuantity = () => {
+            if(quantity <= 1){
+                toast.error('Quantity cannot be less than 1',{position:'top-center', autoClose:3000});
+                dispatch(removeErrors())
+                return;
+
+            }
+            setQuantity(qty => qty - 1);
+
+        }
+        const increaseQuantity = () => {
+            if(product.stock <=quantity){
+                toast.error('Cannot exceed available Stock!',{position:'top-center', autoClose:3000});
+                dispatch(removeErrors())
+                return;
+                
+            }
+            setQuantity(qty => qty + 1);
+            
+
+        }
+        const addToCart = () => {
+            dispatch(addItemsToCart({id: product._id, quantity}));
+
+        }
+
+
   return (
     <>
     <PageTitle title={`${product.name}  - Details`}/>
@@ -88,12 +117,12 @@ function ProductDetails() {
                 {product.stock>0 && (<>
                     <div className="quantity-controls">
                     <span className="quantity-label"></span>
-                        <button className="quantity-button">-</button>
-                        <input type="text"  value={1} className="quantity-value"  readOnly/>
-                        <button className="quantity-button">+</button>
+                        <button className="quantity-button" onClick={decreaseQuantity}>-</button>
+                        <input type="text"  value={quantity} className="quantity-value"  readOnly/>
+                        <button className="quantity-button" onClick={increaseQuantity}>+</button>
                     
                 </div>
-                <button className="add-to-cart-btn">
+                <button className="add-to-cart-btn" onClick={addToCart}>
                     Add To Cart
                 </button>
                 </>)}
@@ -119,7 +148,7 @@ function ProductDetails() {
                 {product.reviews.map((review, index) => (
                     <div className="review-item">
                     <div className="review-header">
-                        <Rating value={review.rating} disabled={true}/>
+                        <Rating key={index} value={review.rating} disabled={true}/>
                     </div>
                     <p className="review-comment">{review.comment}</p>
                         <p className="review-name">{review.name}</p>
