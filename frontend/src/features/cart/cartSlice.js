@@ -1,6 +1,6 @@
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
-import { removeErrors } from '../user/userSlice';
+
 
 
 
@@ -8,7 +8,14 @@ export const addItemsToCart = createAsyncThunk('cart/addItemsToCart', async ({id
     try {
         const {data} = await axios.get(`/api/v1/product/${id}`);
         console.log('Add Items to Cart product:', data);
-        return data
+        return{
+            product: data.product._id,
+            name: data.product.name,
+            image: data.product.image[0].url,
+            price: data.product.price,
+            stock: data.product.stock,
+            quantity
+        }
 
 
           
@@ -52,9 +59,13 @@ const cartSlice = createSlice({
         })
         .addCase(addItemsToCart.fulfilled, (state, action) => {
             const item = action.payload;
-            console.log(item)
+            state.cartItems.push(item);
+            state.loading = false;
+            state.success = true;
+            state.error = null;
+            state.message = `${item.name} is added to cart successfully`;
         })
-        .addCase(addItemsToCart.rejected, (state) => {
+        .addCase(addItemsToCart.rejected, (state,action) => {
              state.loading = false;
             state.error = action.payload?.message || 'An error occurred';
         })
@@ -64,5 +75,5 @@ const cartSlice = createSlice({
 
 });
 
-export const {removeErrors, removeMessage} = cartSlice.actions;
+export const { removeMessage} = cartSlice.actions;
 export default cartSlice.reducer;

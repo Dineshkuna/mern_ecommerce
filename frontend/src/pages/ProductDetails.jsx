@@ -10,6 +10,7 @@ import { getProductDetails, removeErrors } from '../features/products/productSli
 import Loader from '../components/Loader'
 import Product from '../components/Product'
 import { toast } from 'react-toastify'
+import { addItemsToCart, removeMessage } from '../features/cart/cartSlice'
 
 function ProductDetails() {
    const [ userRating, setUserRating ] = useState(0);
@@ -21,6 +22,7 @@ function ProductDetails() {
        }
 
        const  { loading,error, product} = useSelector((state) => state.product);
+       const {loading: cartLoading, error: cartError,success,message,cartItems} = useSelector((state) => state.cart); 
        const dispatch = useDispatch();
       const {id} = useParams();
       useEffect(() => {
@@ -38,7 +40,22 @@ function ProductDetails() {
               toast.error(error.message,{position:'top-center', autoClose:3000});
               dispatch(removeErrors())
             }
-          },[dispatch, error])
+
+            if (cartError) {
+              toast.error(cartError,{position:'top-center', autoClose:3000});
+             
+            }
+          },[dispatch, error, cartError])
+
+
+          useEffect(() => {
+            if (success) {
+              toast.success(message,{position:'top-center', autoClose:3000});
+              dispatch(removeMessage())
+            }
+
+          },[dispatch, success, cartSuccess])
+
           if(loading){
             return (
                 <>
@@ -122,8 +139,8 @@ function ProductDetails() {
                         <button className="quantity-button" onClick={increaseQuantity}>+</button>
                     
                 </div>
-                <button className="add-to-cart-btn" onClick={addToCart}>
-                    Add To Cart
+                <button className="add-to-cart-btn" onClick={addToCart} disabled={cartLoading}>
+                    {cartLoading? 'Adding to Cart...' : 'Add to Cart'}
                 </button>
                 </>)}
 
