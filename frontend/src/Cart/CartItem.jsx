@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { removeErrors } from '../features/cart/cartSlice';
+import { addItemsToCart, removeErrors, removeItemFromCart, removeMessage } from '../features/cart/cartSlice';
 
 
 
 function CartItem({item}) {
    const dispatch = useDispatch();
+   const {success,loading, error,message,cartItems} = useSelector((state) => state.cart);
+
    const [quantity, setQuantity] = useState(item.quantity);
 
     const decreaseQuantity = () => {
@@ -30,6 +32,42 @@ function CartItem({item}) {
                
    
            }
+
+
+              const handleUpdate = () => {
+                if(loading) return
+                if(quantity!== item.quantity){
+                    toast.info('Updating Cart...', {position:'top-center', autoClose:3000, toastId:'cart-update'});
+                dispatch(addItemsToCart({id: item.product, quantity}))
+              }
+            }
+
+
+            useEffect(() => {
+                        if (error) {
+                          toast.error(error,{position:'top-center', autoClose:3000});
+                          dispatch(removeErrors())
+                        }
+            
+                     
+                      },[dispatch, error])
+
+
+                      useEffect(() => {
+                                  if (success) {
+                                    toast.success(message,{position:'top-center', autoClose:3000,toastId:'cart-update'});
+                                    dispatch(removeMessage())
+                                  }
+                      
+                                },[dispatch, success, message])
+
+
+                                const handleRemove = () => {
+                                    if(loading) return;
+                                    dispatch(removeItemFromCart(item.product));
+                                    toast.success(`${item.name} removed from cart`,{position:'top-center', autoClose:3000});
+
+                                }
     
   return (
     <div>
@@ -45,20 +83,21 @@ function CartItem({item}) {
                         </div>
 
                         <div className="quantity-controls">
-                            <button className="quantity-button decrease-btn" onClick={decreaseQuantity}>-</button>
-                            <input type="number" value={item.quantity}  className='quantity-input' readOnly min="1"/>
-                            <button className="quantity-button increase-btn" onClick={increaseQuantity}>+</button>
+                            <button className="quantity-button decrease-btn" onClick={decreaseQuantity} disabled={loading}>-</button>
+                            <input type="number" value={quantity}  className='quantity-input' readOnly min="1"/>
+                            <button className="quantity-button increase-btn" onClick={increaseQuantity} disabled={loading}>+</button>
 
 
                         </div>
 
                         <div className="item-total">
-                            <span className="item-total-price">₹{item.price * item.quantity.toFixed(2)}/-</span>
+                            <span className="item-total-price">₹{item.price * quantity.toFixed(2)}/-</span>
                         </div>
 
                         <div className="item-actions">
-                            <button className="update-item-btn">Update</button>
-                            <button className="remove-item-btn">Remove</button>
+                            <button className="update-item-btn" onClick={handleUpdate}
+                            disabled={loading || quantity === item.quantity}>{loading ? "Updating" : "Update"}</button>
+                            <button className="remove-item-btn" disabled={loading} onClick={handleRemove}>Remove</button>
                         </div>
                     </div>
       
