@@ -23,6 +23,8 @@ function ProductDetails() {
 
        const  { loading,error, product} = useSelector((state) => state.product);
        const {loading: cartLoading, error: cartError,success,message,cartItems} = useSelector((state) => state.cart); 
+       console.log(cartItems);
+       
        const dispatch = useDispatch();
       const {id} = useParams();
       useEffect(() => {
@@ -54,7 +56,7 @@ function ProductDetails() {
               dispatch(removeMessage())
             }
 
-          },[dispatch, success, cartSuccess])
+          },[dispatch, success, message])
 
           if(loading){
             return (
