@@ -10,6 +10,9 @@ function CartItem({item}) {
    const {success,loading, error,message,cartItems} = useSelector((state) => state.cart);
 
    const [quantity, setQuantity] = useState(item.quantity);
+  
+ 
+   
 
     const decreaseQuantity = () => {
                if(quantity <= 1){
