@@ -5,11 +5,28 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useSelector } from 'react-redux'
 import CheckoutPath from './CheckoutPath'
+import { useNavigate } from 'react-router-dom'
 
 function OrderConfirm() {
     const {shippingInfo, cartItems} = useSelector((state) => state.cart);
     const {user} = useSelector((state) => state.user);
-    console.log(shippingInfo,cartItems,user);
+    const subtotal= cartItems.reduce((acc,item)=> acc + item.price * item.quantity, 0);
+     const tax = subtotal * 0.18;
+     const shippingCharges = subtotal>500?0:50;
+     const total = subtotal + tax + shippingCharges;
+     const navigate= useNavigate();
+
+     const proceedToPayment = () => {
+        const data = {
+            subtotal,
+            tax,
+            shippingCharges,
+            total
+        }
+        sessionStorage.setItem('orderInfo', JSON.stringify(data));
+        navigate('/process/payment');
+    }
+    
   return (
     <>
     <PageTitle title="Confirm Your Order" />
@@ -60,7 +77,31 @@ function OrderConfirm() {
             </tbody>
 
         </table>
+
+        <table className="confirm-table">
+            <caption>Order Summary</caption>
+            <thead>
+                <tr>
+                    <th>Subtotal</th>
+                    <th>Shipping Charges</th>
+                    <th>GST</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{subtotal}</td>
+                        <td>{shippingCharges}</td>
+                        <td>{tax}</td>
+                        <td>{total}</td>
+                    </tr>
+                </tbody>
+
+            
+        </table>
+
     </div>
+    <button className="proceed-button" onClick={proceedToPayment}>Proceed to Payment</button>
  </div>
 
 
