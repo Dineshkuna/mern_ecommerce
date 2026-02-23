@@ -4,7 +4,9 @@ import user from './routes/userRoutes.js';
 import product from './routes/productRoutes.js';
 import cookieParser from 'cookie-parser';
 import order from './routes/orderRoutes.js';
+import payment from './routes/paymentRoutes.js';
 import fileUpload from 'express-fileupload';
+import dotenv from 'dotenv';
 
 
 
@@ -20,9 +22,13 @@ app.use(fileUpload());
 app.use("/api/v1", product);
 app.use("/api/v1", user);
 app.use("/api/v1",order);
+app.use("/api/v1",payment);
+
+
 
 
 app.use(errorHandleMiddleware);
+dotenv.config({path:"./config/config.env"});
 export default app;
 
 
