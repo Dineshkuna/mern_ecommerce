@@ -28,7 +28,7 @@ app.use("/api/v1",payment);
 
 
 app.use(errorHandleMiddleware);
-dotenv.config({path:"./config/config.env"});
+dotenv.config({path:"backend/config/config.env"});
 export default app;
 
 
