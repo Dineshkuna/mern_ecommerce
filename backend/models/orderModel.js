@@ -53,6 +53,11 @@ const orderSchema = new mongoose.Schema({
             }   
         }
     ],
+    orderStatus: {
+        type: String,
+        required: true, 
+        default: "Processing"
+    },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
@@ -92,11 +97,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    orderStatus: {
-        type: String,
-        required: true, 
-        default: "Processing"
-    },
+    
     deliveredAt: Date,
     createdAt: {
         type: Date,
