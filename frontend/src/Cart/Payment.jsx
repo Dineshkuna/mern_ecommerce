@@ -3,16 +3,21 @@ import '../CartStyles/Payment.css'
 import PageTitle from '../components/PageTitle'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import CheckoutPath from './CheckoutPath'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 function Payment() {
+  const navigate = useNavigate();
     const orderItem = JSON.parse(sessionStorage.getItem('orderInfo'));
     const {user} = useSelector((state)=>state.user);
     const {shippingInfo} = useSelector((state)=>state.cart);
     const completePayment = async (amount)=>{
+      try {
+
+     
         const  {data:keyData} = await axios.get('/api/v1/getKey');
         const {key}= keyData;
         const {data:orderData} = await axios.post('/api/v1/payment/process', {amount});
@@ -31,13 +36,17 @@ function Payment() {
 
           handler: async function (response) {
 
-            await axios.post('/api/v1/paymentVerification', {
+            const {data} = await axios.post('/api/v1/paymentVerification', {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
             });
 
-            alert("Payment Successful");
+            if(data.success){
+              navigate(`/paymentSuccess?reference=${data.reference}`)
+            } else {
+              alert("Payment verification failed. Please try again.");
+            }
           },
 
           prefill: {
@@ -53,6 +62,11 @@ function Payment() {
 
       const rzp = new Razorpay(options);
       rzp.open();
+
+       } catch (error) {
+        console.log('Payment Error:', error);
+        toast.error(error.message,{position:'top-center', autoClose:3000});
+      }
     }
   return (
     <>

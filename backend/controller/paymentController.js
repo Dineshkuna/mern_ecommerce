@@ -32,7 +32,7 @@ export const paymentVerification = handleAsyncError(async (req, res, next) => {
     if (!req.body) {
         return res.status(400).json({
             success: false,
-            message: "No payment data received"
+            message: "No payment data received" 
         });
     }
 
@@ -46,9 +46,25 @@ export const paymentVerification = handleAsyncError(async (req, res, next) => {
         .digest("hex");
         
 
-    if (expectedSignature === razorpay_signature) {
-        return res.status(200).json({ success: true });
+    // if (expectedSignature === razorpay_signature) {
+    //     return res.status(200).json({ success: true });
+    // } else {
+    //     return res.status(400).json({ success: false });
+    // }
+
+
+    const isAuthentic = expectedSignature === razorpay_signature;
+
+    if (isAuthentic) {
+        return res.status(200).json({
+            success: true,
+            message: "Payment verification successful",
+            reference: razorpay_payment_id,
+        });
     } else {
-        return res.status(400).json({ success: false });
+        return res.status(400).json({
+            success: false,
+            message: "Payment verification failed"
+        });
     }
 });
