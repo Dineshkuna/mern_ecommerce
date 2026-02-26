@@ -13,7 +13,7 @@ router.route('/admin/order/:id')
 
 
 router.route('/admin/orders').get(verifyUserAuth, roleBasedAccess('admin'), getAllOrders); 
-router.route('/orders/user').post(verifyUserAuth, allMyOrders); 
+router.route('/orders/user').get(verifyUserAuth, allMyOrders); 
 
 
 

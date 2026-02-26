@@ -3,12 +3,14 @@ import '../CartStyles/PaymentSuccess.css'
 import { Link, useSearchParams } from 'react-router-dom';
 import PageTitle from '../components/PageTitle';
 import Footer from '../components/Footer';
+import Loader from '../components/Loader';
 import Navbar from '../components/Navbar';
 import { use } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { createOrder, removeErrors, removeSuccess } from '../features/order/orderSlice';
+import { clearCart } from '../features/cart/cartSlice';
 
 function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -26,13 +28,15 @@ function PaymentSuccess() {
     const createOrderData = async () => {
         try {
             const orderItem = JSON.parse(sessionStorage.getItem('orderInfo'))
+            if (!orderItem)  return;
+                
             const orderData = {
                 shippingInfo: {
                     address:shippingInfo.address,
                     city:shippingInfo.city,
                     state:shippingInfo.state,
                     country:shippingInfo.country,
-                    pinCode:shippingInfo.pinCode,
+                    pinCode:shippingInfo.pincode,
                     phoneNo:shippingInfo.phoneNumber
 
                 },
@@ -49,10 +53,15 @@ function PaymentSuccess() {
                     status: 'succeeded'
 
             },
-            itemPrice:orderInfo.subtotal
+            itemPrice:orderItem.subtotal,
+            taxPrice:orderItem.tax,
+            shippingPrice:orderItem.shippingCharges,
+            totalPrice:orderItem.total,
         }
 
-         
+         console.log('Sending Data', orderData)
+         dispatch(createOrder(orderData));
+         sessionStorage.removeItem('orderInfo');
 
         } catch (error) {
             console.log('Order Creation Error', error.message);
@@ -62,11 +71,12 @@ function PaymentSuccess() {
 
     createOrderData();
 
-}, [dispatch, reference, shippingInfo, cartItems]);
+}, []);
 
     useEffect(() => {
         if (success) {
             toast.success('Order Placed Successfully!', {position:'top-center', autoClose:3000});
+            dispatch(clearCart());
             dispatch(removeSuccess());
         }
     }, [ dispatch, success])
@@ -80,8 +90,8 @@ function PaymentSuccess() {
 
   
   return (
-
-    <>
+<>
+   {loading?(<Loader/>):( <>
     <PageTitle title="Payment  Status" />
     <Navbar />
    <div className="payment-success-container">
@@ -95,6 +105,7 @@ function PaymentSuccess() {
     </div>
    </div>
    <Footer />
+   </>)}
    </>
   )
 }
