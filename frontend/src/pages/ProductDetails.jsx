@@ -14,6 +14,7 @@ import { addItemsToCart, removeMessage } from '../features/cart/cartSlice'
 
 function ProductDetails() {
    const [ userRating, setUserRating ] = useState(0);
+   const [comment, setComment] = useState('');
    const [quantity, setQuantity] = useState(1);
        const handleRatingChange = (newRating) => {
            setUserRating(newRating);
@@ -106,6 +107,16 @@ function ProductDetails() {
         }
 
 
+        const handleReviewSubmit = (e) => {
+            e.preventDefault();
+            if(!userRating) {
+                toast.error('Please select a rating',{position:'top-center', autoClose:3000});
+                return;
+            }
+
+        }
+
+
   return (
     <>
     <PageTitle title={`${product.name}  - Details`}/>
@@ -147,14 +158,14 @@ function ProductDetails() {
                 </>)}
 
 
-                <form action="" className="review-form">
+                <form action="" className="review-form" onSubmit={handleReviewSubmit}>
                     <h3>Write a Review</h3>
                     <Rating 
                     value={0}
                     disabled={false}
                     onRatingChange={handleRatingChange}
                     />
-                    <textarea name="" id="" className="review-input" placeholder='Write your review here..'></textarea>
+                    <textarea name="" id="" className="review-input" placeholder='Write your review here..' value={comment} onChange={(e) => setComment(e.target.value)}></textarea>
                     <button type="submit" className="submit-review-btn">Submit Review</button>
                 </form>
             </div>
