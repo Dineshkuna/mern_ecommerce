@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import '../pageStyles/ProductDetails.css'
 import PageTitle from '../components/PageTitle'
 import Navbar from '../components/Navbar'
@@ -6,7 +6,7 @@ import Footer from '../components/Footer'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { getProductDetails, removeErrors } from '../features/products/productSlice'
+import { createReview, getProductDetails, removeErrors } from '../features/products/productSlice'
 import Loader from '../components/Loader'
 import Product from '../components/Product'
 import { toast } from 'react-toastify'
@@ -22,7 +22,7 @@ function ProductDetails() {
    
        }
 
-       const  { loading,error, product} = useSelector((state) => state.product);
+       const  { loading,error, product, reviewSuccess, reviewLoading } = useSelector((state) => state.product);
        const {loading: cartLoading, error: cartError,success,message,cartItems} = useSelector((state) => state.cart); 
        console.log(cartItems);
        
@@ -59,26 +59,7 @@ function ProductDetails() {
 
           },[dispatch, success, message])
 
-          if(loading){
-            return (
-                <>
-                <Navbar />
-                <Loader />
-                <Footer /> 
-                </>
-            )
-        }
-
-        if(error || !product){
-           return (
-                <>
-                <PageTitle title="Product Details"/>
-                <Navbar />
-                
-                <Footer /> 
-                </>
-            )
-        }
+        
 
         const decreaseQuantity = () => {
             if(quantity <= 1){
@@ -114,6 +95,44 @@ function ProductDetails() {
                 return;
             }
 
+            dispatch(createReview({
+                rating: userRating,
+                comment,
+                productId:id
+            }))
+
+        }
+        useEffect(() => {
+            if(reviewSuccess){
+                toast.success('Review submitted successfully!',{position:'top-center', autoClose:3000});
+                setUserRating(0);
+                setComment('');
+                dispatch(removeErrors());
+                dispatch(getProductDetails(id));
+            }
+
+        }, [dispatch, reviewSuccess, id])
+
+
+          if(loading){
+            return (
+                <>
+                <Navbar />
+                <Loader />
+                <Footer /> 
+                </>
+            )
+        }
+
+        if(error || !product){
+           return (
+                <>
+                <PageTitle title="Product Details"/>
+                <Navbar />
+                
+                <Footer /> 
+                </>
+            )
         }
 
 
@@ -166,7 +185,7 @@ function ProductDetails() {
                     onRatingChange={handleRatingChange}
                     />
                     <textarea name="" id="" className="review-input" placeholder='Write your review here..' value={comment} onChange={(e) => setComment(e.target.value)}></textarea>
-                    <button type="submit" className="submit-review-btn">Submit Review</button>
+                    <button type="submit" className="submit-review-btn" disabled={reviewLoading}>{reviewLoading ? 'Submitting...' : 'Submit Review'}</button>
                 </form>
             </div>
 
