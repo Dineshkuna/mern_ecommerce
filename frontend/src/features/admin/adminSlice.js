@@ -1,5 +1,6 @@
 
-import  { createSlice } from '@reduxjs/toolkit'
+import  { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 // Fetch All Products
 
@@ -10,6 +11,7 @@ export const fetchAdminProducts = createAsyncThunk(
     try {
       
       const {data}  = await axios.get('/api/v1/admin/products')
+      return data;
 
     } catch (error) {
       return rejectWithValue(
@@ -37,6 +39,25 @@ const adminSlice = createSlice({
         removeSuccess:(state)=>{
             state.success=false
         }
+    },
+    extraReducers:(builder)=>{
+      builder
+      .addCase(fetchAdminProducts.pending,(state)=>{
+        state.loading = true;
+        state.error=null
+      })
+      .addCase(fetchAdminProducts.fulfilled,(state, action)=>{
+        state.loading = false;
+        state.products = action.payload.products
+
+
+      })
+      .addCase(fetchAdminProducts.rejected,(state, action)=>{
+        state.loading = false;
+            state.error = action.payload || 'Error While Fetching the products';
+
+      })
+      
     }
     })
 
