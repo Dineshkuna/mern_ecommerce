@@ -2,20 +2,59 @@ import Product from '../models/productModel.js';
 import handleAsyncError from '../middleware/handleAsyncError.js';
 import HandleError from '../utils/handleError.js';
 import APIFunctionality from '../utils/apiFunctionality.js';
+import {v2 as cloudinary} from 'cloudinary';
 
 
 // http://localhost:8000/api/v1/product/6979ea2a11bdf70639b2e1c3?keyword=shirt
 
 // Create Product
-export const createProducts = handleAsyncError(async (req, res, next)=>{
+export const createProducts = async (req, res, next) => {
+  try {
+    let images = [];
+
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload product images"
+      });
+    }
+
+    if (!Array.isArray(req.files.image)) {
+      images.push(req.files.image);
+    } else {
+      images = req.files.image;
+    }
+
+    const imagesLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.uploader.upload(
+        images[i].tempFilePath,
+        {
+          folder: "products"
+        }
+      );
+
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url
+      });
+    }
+
+    req.body.image = imagesLinks;
     req.body.user = req.user.id;
-   
+
     const product = await Product.create(req.body);
+
     res.status(201).json({
-        success: true,
-        product
-    })
-})
+      success: true,
+      product
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get All Products
 export const getAllProducts =handleAsyncError(async  (req, res, next)=>{

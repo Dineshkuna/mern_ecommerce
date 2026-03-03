@@ -4,6 +4,7 @@ import { connectMongoDatabase } from './config/db.js';
 dotenv.config({path:"backend/config/config.env"});
 import {v2 as cloudinary} from 'cloudinary';
 import Razorpay from 'razorpay';
+import fileUpload from "express-fileupload";
 
 connectMongoDatabase();
 
@@ -45,3 +46,11 @@ process.on('unhandledRejection', (err) => {
         process.exit(1);
     });
 })
+
+
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/"
+  })
+);

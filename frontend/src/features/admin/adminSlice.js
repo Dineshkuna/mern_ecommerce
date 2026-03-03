@@ -1,4 +1,3 @@
-
 import  { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
@@ -21,6 +20,30 @@ export const fetchAdminProducts = createAsyncThunk(
   }
 )
 
+
+// Create Products
+
+
+export const createProduct = createAsyncThunk(
+  'admin/createProduct',
+  async (productData, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+      
+      const {data}  = await axios.post('/api/v1/admin/product/create', productData, config)
+      return data;
+
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Error While Creating the product '
+      )
+    }
+  }
+)
 
 
 const adminSlice = createSlice({
@@ -55,6 +78,27 @@ const adminSlice = createSlice({
       .addCase(fetchAdminProducts.rejected,(state, action)=>{
         state.loading = false;
             state.error = action.payload || 'Error While Fetching the products';
+
+      })
+
+
+
+       builder
+      .addCase(createProduct.pending,(state)=>{
+        state.loading = true;
+        state.error=null
+      })
+      .addCase(createProduct.fulfilled,(state, action)=>{
+        state.loading = false;
+        state.success = action.payload.success;
+        state.products.push(action.payload.product)
+        console.log(state.products);
+
+
+      })
+      .addCase(createProduct.rejected,(state, action)=>{
+        state.loading = false;
+            state.error = action.payload || 'Error While Creating the product';
 
       })
       
