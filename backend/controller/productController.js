@@ -12,6 +12,7 @@ export const createProducts = async (req, res, next) => {
   try {
     let images = [];
 
+    // Check if images exist
     if (!req.files || !req.files.image) {
       return res.status(400).json({
         success: false,
@@ -19,15 +20,20 @@ export const createProducts = async (req, res, next) => {
       });
     }
 
+    // If single image
     if (!Array.isArray(req.files.image)) {
       images.push(req.files.image);
-    } else {
+    } 
+    // If multiple images
+    else {
       images = req.files.image;
     }
 
     const imagesLinks = [];
 
+    // Upload images to Cloudinary
     for (let i = 0; i < images.length; i++) {
+
       const result = await cloudinary.uploader.upload(
         images[i].tempFilePath,
         {
@@ -41,7 +47,10 @@ export const createProducts = async (req, res, next) => {
       });
     }
 
+    // Save image links in product
     req.body.image = imagesLinks;
+
+    // Attach user id
     req.body.user = req.user.id;
 
     const product = await Product.create(req.body);
@@ -52,7 +61,11 @@ export const createProducts = async (req, res, next) => {
     });
 
   } catch (error) {
-    next(error);
+    console.log("CREATE PRODUCT ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };
 

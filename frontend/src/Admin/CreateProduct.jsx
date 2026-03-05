@@ -5,7 +5,6 @@ import PageTitle from "../components/PageTitle";
 import Footer from "../components/Footer";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { use } from "react";
 import { useEffect } from "react";
 import { createProduct, removeErrors, removeSuccess } from "../features/admin/adminSlice";
 import { toast } from "react-toastify";
@@ -21,7 +20,7 @@ function CreateProduct() {
   const [image, setImage] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
 
-  const categories = ["glass", "shirt", "mobile", "dress", "tv","pant"];
+  const categories = ["glass", "shirt", "mobile", "dress", "tv","pant","watch"];
 
 
   const createProductSubmit = (e) => {
@@ -33,7 +32,7 @@ function CreateProduct() {
     myForm.set("category", category);
     myForm.set("stock", stock);
     image.forEach((img) => {
-      myForm.append("image", img);
+      myForm.append("image", img, img.name);
     })
     dispatch(createProduct(myForm));
     
@@ -69,6 +68,13 @@ function CreateProduct() {
     if(success){
       toast.success("Product Created Successfully",{position:'top-center', autoClose:3000});
       dispatch(removeSuccess())
+      setName("");
+      setPrice("");
+      setDescription("");
+      setCategory("");
+      setStock("");
+      setImage([]);
+      setImagePreview([]);
     }
   }, [dispatch, error, success])
      

@@ -11,11 +11,13 @@ import Loader from '../components/Loader'
 import Product from '../components/Product'
 import { toast } from 'react-toastify'
 import { addItemsToCart, removeMessage } from '../features/cart/cartSlice'
+import { use } from 'react'
 
 function ProductDetails() {
    const [ userRating, setUserRating ] = useState(0);
    const [comment, setComment] = useState('');
    const [quantity, setQuantity] = useState(1);
+   const [selectedImage, setSelectedImage] = useState('');
        const handleRatingChange = (newRating) => {
            setUserRating(newRating);
           
@@ -23,6 +25,10 @@ function ProductDetails() {
        }
 
        const  { loading,error, product, reviewSuccess, reviewLoading } = useSelector((state) => state.product);
+       console.log(product);
+       
+
+
        const {loading: cartLoading, error: cartError,success,message,cartItems} = useSelector((state) => state.cart); 
        console.log(cartItems);
        
@@ -113,6 +119,12 @@ function ProductDetails() {
 
         }, [dispatch, reviewSuccess, id])
 
+        useEffect(() => {
+            if(product && product.image && product.image.length > 0){
+                setSelectedImage(product.image[0].url);
+            }
+        }, [product])
+
 
           if(loading){
             return (
@@ -139,12 +151,19 @@ function ProductDetails() {
   return (
     <>
     <PageTitle title={`${product.name}  - Details`}/>
-
+  {/* product.image[0].url.replace('./' , '/') */}
     <Navbar />
     <div className="product-details-container">
         <div className="product-detail-container">
             <div className="product-image-container">
-                <img src={product.image[0].url.replace('./' , '/')} alt={product.name}  className="product-detail-image" />
+                <img src={selectedImage} alt={product.name}  className="product-detail-image" />
+                {product.image.length > 1 && (
+                    <div className="product-thumbnails">
+                        { product.image.map((img, index) => (
+                            <img src={img.url} alt={`Thumbnail ${index+1}`}className="thumbnail-image" key={index} onClick={() =>setSelectedImage(img.url)} />
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="product-info">
                 <h2>{product.name} </h2>
