@@ -1,6 +1,9 @@
 import  { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
+// Configure axios with credentials
+axios.defaults.withCredentials = true;
+
 // Fetch All Products
 
 
@@ -9,7 +12,7 @@ export const fetchAdminProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       
-      const {data}  = await axios.get('/api/v1/admin/products')
+      const {data}  = await axios.get('/api/v1/admin/products', {withCredentials: true})
       return data;
 
     } catch (error) {
@@ -31,7 +34,8 @@ export const createProduct = createAsyncThunk(
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: true
       };
       
       const {data}  = await axios.post('/api/v1/admin/product/create', productData, config)

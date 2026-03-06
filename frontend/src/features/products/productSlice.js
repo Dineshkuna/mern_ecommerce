@@ -2,6 +2,9 @@
 import { createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Configure axios with credentials
+axios.defaults.withCredentials = true;
+
 
 export const getProduct = createAsyncThunk('product/getProduct',async({keyword,page=1,category}, {rejectWithValue})=>{
     try {
@@ -51,7 +54,8 @@ export const createReview = createAsyncThunk('product/createReview',async({ratin
         const config={
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials: true
         }
         const {data} = await axios.put(`/api/v1/review`, {rating, comment, productId}, config);
         return data;

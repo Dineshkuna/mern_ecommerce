@@ -2,13 +2,17 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 
 import axios from 'axios'
 
+// Configure axios with credentials
+axios.defaults.withCredentials = true;
+
 
 export const createOrder = createAsyncThunk('order/createOrder', async (order, {rejectWithValue})=>{
     try {
         const config = {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials: true
         }
         const {data} = await axios.post('/api/v1/new/order', order, config);
         console.log('Order Data', data);
@@ -23,7 +27,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async (order, {
 
 export const getAllMyOrders = createAsyncThunk('order/getAllMyOrders', async (_, {rejectWithValue})=>{
     try {
-        const  {data} = await axios.get('/api/v1/orders/user');
+        const  {data} = await axios.get('/api/v1/orders/user', {withCredentials: true});
         return data
        
     } catch (error) {
@@ -34,7 +38,7 @@ export const getAllMyOrders = createAsyncThunk('order/getAllMyOrders', async (_,
 // Get  Order Details
 export const getOrderDetails = createAsyncThunk('order/getOrderDetails', async (orderID, {rejectWithValue})=>{
     try {
-        const  {data} = await axios.get(`/api/v1/order/${orderID}`);
+        const  {data} = await axios.get(`/api/v1/order/${orderID}`, {withCredentials: true});
         return data
        
     } catch (error) {

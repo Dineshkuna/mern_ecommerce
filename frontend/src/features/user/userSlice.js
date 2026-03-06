@@ -1,6 +1,9 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Configure axios with credentials
+axios.defaults.withCredentials = true;
+
 
 // Register API
 
@@ -9,7 +12,8 @@ export const register = createAsyncThunk('user/register', async (userData, {reje
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }    
+            },
+            withCredentials: true
     }
         const {data} = await axios.post('/api/v1/register', userData, config);
         console.log('Registration data')
@@ -30,7 +34,8 @@ export const login = createAsyncThunk('user/login', async ({email,password}, {re
         const config = {
             headers: {
                 'Content-Type': 'application/json'
-            }    
+            },
+            withCredentials: true
     }
         const {data} = await axios.post('/api/v1/login', {email,password}, config);
         console.log('Login data',data)
@@ -82,7 +87,8 @@ export const updateProfile = createAsyncThunk('user/updateProfile', async (userD
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }    
+            },
+            withCredentials: true
     }
         const {data} = await axios.put('/api/v1/profile/update',userData,config);
         
@@ -101,7 +107,8 @@ export const updatePassword = createAsyncThunk('user/updatePassword', async (for
         const config = {
             headers: {
                 'Content-Type': 'application/json'
-            }    
+            },
+            withCredentials: true
     }
         const {data} = await axios.put('/api/v1/password/update',formData,config);
         

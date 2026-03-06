@@ -1,6 +1,9 @@
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Configure axios with credentials
+axios.defaults.withCredentials = true;
+
 
 
 
