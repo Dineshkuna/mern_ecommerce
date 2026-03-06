@@ -150,12 +150,8 @@ export const UpdateProduct = handleAsyncError(async(req, res, next)=> {
     }
 
     req.body.image = imagesLinks;
-
-
-
 }
    
-
      product = await Product .findByIdAndUpdate(req.params.id, req.body, {
         new:true,
         runValidators:true
