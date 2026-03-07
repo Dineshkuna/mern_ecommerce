@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProductDetails } from "../features/products/productSlice";
+import { removeErrors, removeSuccess, updateProduct } from "../features/admin/adminSlice";
+import { toast } from "react-toastify";
 
 function UpdateProduct() {
   const [name, setName] = useState("");
@@ -13,11 +15,15 @@ function UpdateProduct() {
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [stock, setStock] = useState("");
+    const [image, setImage] = useState([]);
     const [oldImage, setOldImage] = useState([]);
     const [imagePreview, setImagePreview] = useState([]);
 
     const {product} = useSelector(state =>state.product)
-    console.log(product);
+    const {success, error, loading} = useSelector(state =>state.admin)
+
+
+   
     
     const dispatch = useDispatch();
 
@@ -39,7 +45,7 @@ function UpdateProduct() {
         setDescription(product.description)
         setCategory(product.category)
         setStock(product.stock)
-        setOldImage(product.product.image)
+        setOldImage(product.image)
         
       }
 
@@ -82,9 +88,28 @@ const updateProductSubmit = (e) => {
       image.forEach((img) => {
         myForm.append("image", img, img.name);
       })
-      
+      dispatch(updateProduct({
+        id:updateId,
+        formData:myForm
+      }))
 
 }
+
+useEffect(() => {
+    if (success) {
+      toast.success("Product Updated Successfully",{position:'top-center', autoClose:3000});
+      dispatch(removeSuccess())
+    }
+
+    if (error) {
+          toast.error(error.message,{position:'top-center', autoClose:3000});
+          dispatch(removeErrors())
+        }
+
+    
+        
+      
+  },[dispatch, error, success])
 
     
 
