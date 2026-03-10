@@ -115,11 +115,27 @@ export const getSingleUser = createAsyncThunk(
   "admin/getSingleUser",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`/api/v1/admin/users/${id}`);
+      const { data } = await axios.get(`/api/v1/admin/user/${id}`);
       return data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch single users",
+      );
+    }
+  },
+);
+
+
+// Update User Role
+export const updateUserRole = createAsyncThunk(
+  "admin/updateUserRole",
+  async ({userId,role}, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(`/api/v1/admin/user/${userId}`,role);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update user role",
       );
     }
   },
