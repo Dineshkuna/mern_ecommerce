@@ -67,7 +67,7 @@ function OrderConfirm() {
             <tbody>
                 {cartItems && cartItems.map((item) => (
                     <tr key={item.name}>
-                        <td><img src={item.image} alt={item.name} className="confirm-product-image" /></td>
+                        <td><img src={item.image} alt={item.name}  className="confirm-product-image" width="100px"  /></td>
                         <td>{item.name}</td>
                         <td>${item.price}</td>
                         <td>{item.quantity}</td>
