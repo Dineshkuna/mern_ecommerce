@@ -107,65 +107,66 @@ export const getAllProducts =handleAsyncError(async  (req, res, next)=>{
 })
 
 
-// Update Product 
-export const UpdateProduct = handleAsyncError(async(req, res, next)=> {
+export const UpdateProduct = handleAsyncError(async (req, res, next) => {
 
+    let product = await Product.findById(req.params.id);
 
-    let product = await Product .findById(req.params.id)
-
-     if(!product){
-        return next( new HandleError("Product not found"), 404);
+    if (!product) {
+        return next(new HandleError("Product not found", 404));
     }
 
     let images = [];
-    if(typeof req.body.image === 'String'){
-        images.push(req.body.image);
-    } else if(Array.isArray(req.body.image)){
-        images = req.body.image;
-    }
 
-    if (images.length > 0){
-        for(let i = 0; i < product.image.length; i++){
+    // check if new images uploaded
+    if (req.files && req.files.image) {
+
+        // convert to array
+        if (!Array.isArray(req.files.image)) {
+            images.push(req.files.image);
+        } else {
+            images = req.files.image;
+        }
+
+        // delete old images from cloudinary
+        for (let i = 0; i < product.image.length; i++) {
             await cloudinary.uploader.destroy(product.image[i].public_id);
         }
 
-//  Upload new images
+        const imagesLinks = [];
 
-    const imagesLinks = [];
+        // upload new images
+        for (let i = 0; i < images.length; i++) {
+            const result = await cloudinary.uploader.upload(
+                images[i].tempFilePath,
+                {
+                    folder: "products"
+                }
+            );
 
-    // Upload images to Cloudinary
-    for (let i = 0; i < images.length; i++) {
-
-      const result = await cloudinary.uploader.upload(
-        images[i].tempFilePath,
-        {
-          folder: "products"
+            imagesLinks.push({
+                public_id: result.public_id,
+                url: result.secure_url
+            });
         }
-      );
 
-      imagesLinks.push({
-        public_id: result.public_id,
-        url: result.secure_url
-      });
+        req.body.image = imagesLinks;
     }
 
-    req.body.image = imagesLinks;
-}
-   
-     product = await Product .findByIdAndUpdate(req.params.id, req.body, {
-        new:true,
-        runValidators:true
-    })
-
-     
-   
+    product = await Product.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+            new: true,
+            runValidators: true
+        }
+    );
 
     res.status(200).json({
         success: true,
         product
-    })
+    });
 
-})
+});
 
 
 // Delete Product

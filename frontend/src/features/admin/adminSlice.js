@@ -141,9 +141,14 @@ const adminSlice = createSlice({
       .addCase(updateProduct.fulfilled,(state, action)=>{
         state.loading = false;
         state.success = action.payload.success;
-        state.product = action.payload.product
+        state.product = action.payload.product;
 
-      })
+        const updatedProduct = action.payload.product;
+
+        state.products = state.products.map((product) =>
+            product._id === updatedProduct._id ? updatedProduct : product
+    );
+})
       .addCase(updateProduct.rejected,(state, action)=>{
         state.loading = false;
             state.error = action.payload || 'Product Update Failed';

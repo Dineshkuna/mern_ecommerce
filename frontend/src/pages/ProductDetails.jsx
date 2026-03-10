@@ -11,7 +11,6 @@ import Loader from '../components/Loader'
 import Product from '../components/Product'
 import { toast } from 'react-toastify'
 import { addItemsToCart, removeMessage } from '../features/cart/cartSlice'
-import { use } from 'react'
 
 function ProductDetails() {
    const [ userRating, setUserRating ] = useState(0);
