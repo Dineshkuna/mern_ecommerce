@@ -177,6 +177,26 @@ export const deleteUser = createAsyncThunk(
 );
 
 
+// Fetch All Orders
+export const fetchAllOrders = createAsyncThunk(
+  "admin/fetchAllOrders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `/api/v1/admin/orders/`,
+      );
+
+      return data;
+
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to Fetch Orders"
+      );
+    }
+  }
+);
+
+
  
 
 const adminSlice = createSlice({
@@ -190,7 +210,11 @@ const adminSlice = createSlice({
     deleting: {},
     users:[],
     user:{},
-    message:null
+    message:null,
+    orders:[],
+    totalAmount:0
+    
+
   },
   reducers: {
     removeErrors: (state) => {
@@ -332,6 +356,22 @@ const adminSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to delete user";
+      });
+
+
+      builder
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload.orders;
+        state.totalAmount = action.payload.totalAmount;
+      })
+      .addCase(fetchAllOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to Fetch Orders";
       });
   },
 });
