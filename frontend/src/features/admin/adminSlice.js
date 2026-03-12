@@ -76,14 +76,13 @@ export const updateProduct = createAsyncThunk(
   },
 );
 
-
 // delete product
 export const deleteProduct = createAsyncThunk(
   "admin/deleteProduct",
   async (productId, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(`/api/v1/admin/product/${productId}`);
-      return {productId};
+      return { productId };
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Product Update Failed",
@@ -91,8 +90,6 @@ export const deleteProduct = createAsyncThunk(
     }
   },
 );
-
-
 
 // Fetch all Users
 export const fetchUsers = createAsyncThunk(
@@ -109,7 +106,6 @@ export const fetchUsers = createAsyncThunk(
   },
 );
 
-
 // Get Single User
 export const getSingleUser = createAsyncThunk(
   "admin/getSingleUser",
@@ -125,79 +121,104 @@ export const getSingleUser = createAsyncThunk(
   },
 );
 
-
 // Update User Role
 export const updateUserRole = createAsyncThunk(
   "admin/updateUserRole",
   async ({ userId, role }, { rejectWithValue }) => {
     try {
-
       const config = {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
       const { data } = await axios.put(
         `/api/v1/admin/user/${userId}`,
-        { role },   
-        config
+        { role },
+        config,
       );
 
       return data;
-
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update user role"
+        error.response?.data?.message || "Failed to update user role",
       );
     }
-  }
+  },
 );
-
-
 
 // Delete User Profile
 export const deleteUser = createAsyncThunk(
   "admin/deleteUser",
   async (userId, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(
-        `/api/v1/admin/user/${userId}`,
-      );
+      const { data } = await axios.delete(`/api/v1/admin/user/${userId}`);
 
       return data;
-
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to delete user "
+        error.response?.data?.message || "Failed to delete user ",
       );
     }
-  }
+  },
 );
-
 
 // Fetch All Orders
 export const fetchAllOrders = createAsyncThunk(
   "admin/fetchAllOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        `/api/v1/admin/orders/`,
-      );
+      const { data } = await axios.get(`/api/v1/admin/orders/`);
 
       return data;
-
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to Fetch Orders"
+        error.response?.data?.message || "Failed to Fetch Orders",
       );
     }
-  }
+  },
+);
+
+// Delete Order
+export const deleteOrder = createAsyncThunk(
+  "admin/deleteOrder",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(`/api/v1/admin/order/${id}`);
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "This order is under processing and cannot be delete",
+      );
+    }
+  },
 );
 
 
- 
+
+// Update Order status
+export const updateOrderStatus = createAsyncThunk(
+  "admin/updateOrderStatus",
+  async ({orderId,status}, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers:{
+          'content-Type':'application/json'
+        }
+      }
+      const { data } = await axios.put(`/api/v1/admin/order/${orderId}`,{status},config);
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to Update Order Status",
+      );
+    }
+  },
+);
+
 
 const adminSlice = createSlice({
   name: "admin",
@@ -208,13 +229,12 @@ const adminSlice = createSlice({
     error: null,
     product: {},
     deleting: {},
-    users:[],
-    user:{},
-    message:null,
-    orders:[],
-    totalAmount:0
-    
-
+    users: [],
+    user: {},
+    message: null,
+    orders: [],
+    totalAmount: 0,
+    order:{}
   },
   reducers: {
     removeErrors: (state) => {
@@ -223,9 +243,9 @@ const adminSlice = createSlice({
     removeSuccess: (state) => {
       state.success = false;
     },
-    clearMessage:(state)=>{
-      state.message=null
-    }
+    clearMessage: (state) => {
+      state.message = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -279,26 +299,25 @@ const adminSlice = createSlice({
         state.error = action.payload || "Product Update Failed";
       });
 
-
-      builder
-      .addCase(deleteProduct.pending, (state,action) => {
-        const productId=action.meta.arg
+    builder
+      .addCase(deleteProduct.pending, (state, action) => {
+        const productId = action.meta.arg;
         state.deleting[productId] = true;
-        
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        const productId = action.payload.productId
+        const productId = action.payload.productId;
         state.deleting[productId] = false;
-        state.products = state.products.filter(product => product._id !== productId); 
+        state.products = state.products.filter(
+          (product) => product._id !== productId,
+        );
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        const productId=action.meta.arg
+        const productId = action.meta.arg;
         state.deleting[productId] = false;
         state.error = action.payload?.message || "Product Deletion Failed";
       });
 
-
-      builder
+    builder
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -312,9 +331,7 @@ const adminSlice = createSlice({
         state.error = action.payload || "Failed to fetch users";
       });
 
-
-      
-      builder
+    builder
       .addCase(getSingleUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -328,8 +345,7 @@ const adminSlice = createSlice({
         state.error = action.payload?.message || "Failed to fetch Single users";
       });
 
-
-      builder
+    builder
       .addCase(updateUserRole.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -343,8 +359,7 @@ const adminSlice = createSlice({
         state.error = action.payload?.message || "Failed to update user role";
       });
 
-
-      builder
+    builder
       .addCase(deleteUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -358,8 +373,7 @@ const adminSlice = createSlice({
         state.error = action.payload?.message || "Failed to delete user";
       });
 
-
-      builder
+    builder
       .addCase(fetchAllOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -372,6 +386,42 @@ const adminSlice = createSlice({
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to Fetch Orders";
+      });
+
+    builder
+      .addCase(deleteOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = action.payload.message;
+
+        const id = action.payload.id;
+
+        state.orders = state.orders.filter((order) => order._id !== id);
+      })
+      .addCase(deleteOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "This order is under processing and cannot be delete";
+      });
+
+
+      builder
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+        state.order = action.payload.order;
+
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to updated order status";
       });
   },
 });
