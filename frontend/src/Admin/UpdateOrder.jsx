@@ -100,14 +100,14 @@ function UpdateOrder() {
 
         <div className="order-status">
             <h2>Update Status</h2>
-            <select className="status-select" value={status} onChange={(e)=> setStatus(e.target.value)}>
+            <select className="status-select" value={status} onChange={(e)=> setStatus(e.target.value)} disabled={loading || orderStatus === 'Delivered'}>
                 <option value="">Select Status</option>
                 <option value="Shipped">Shipped</option>
                 <option value="On The Way">On The Way</option>
                 <option value="Delivered">Delivered</option>
             </select>
 
-            <button className="update-button" onClick={handleStatusUpdate}>Update Status</button>
+            <button className="update-button" onClick={handleStatusUpdate} disabled={loading || !status || orderStatus === 'Delivered'}>Update Status</button>
         </div>
     </div>)}
 
