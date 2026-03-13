@@ -66,7 +66,7 @@ function Dashboard() {
 
             <div className="nav-section">
               <h3>Reviews</h3>
-              <Link to="/admin/reviewId">
+              <Link to="/admin/reviews">
                 <Star className='nav-icon' />
                 All Reviews
               </Link>
