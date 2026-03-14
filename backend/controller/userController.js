@@ -142,7 +142,7 @@ export const resetPassword = handleAsyncError(async(req, res, next)=>{
 // Get User Details
 export const getUserDetails = handleAsyncError(async(req, res, next)=>{
     const user = await User.findById(req.user.id);
-    console.log(req.user.id)
+    // console.log(req.user.id)
     res.status(200).json({
         success: true,
         user
